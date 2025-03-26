@@ -375,3 +375,165 @@ h1 {
     width: 50%;
   }
 }
+
+/* Additional styles for Bayesian elements */
+.belief-updates {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.belief-update {
+  background-color: #e8f4f8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.bayes-explanation {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #f0f7fa;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border-left: 3px solid #3498db;
+}
+
+.formula {
+  font-family: monospace;
+  line-height: 1.5;
+}
+
+.formula p {
+  margin-bottom: 8px;
+}
+
+.formula ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.explanation-button {
+  background-color: #e2e8f0;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-bottom: 15px;
+  color: #4a5568;
+  transition: all 0.2s;
+}
+
+.explanation-button:hover {
+  background-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+.explanation-button:active {
+  transform: translateY(0);
+}
+
+.concepts-panel {
+  margin-top: 25px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  font-size: 0.9rem;
+}
+
+.concepts-panel h3 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.concepts-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.concepts-content p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .concepts-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Enhanced card styling */
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Animated belief bars */
+.belief-bar {
+  transition: width 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+/* Decision impact indicator */
+.impact-indicator {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.impact-positive {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.impact-negative {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.impact-neutral {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+/* Bayesian factor visualization */
+.bayes-factor-viz {
+  margin-top: 10px;
+  height: 6px;
+  width: 100%;
+  background: #e2e3e5;
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bayes-factor-viz::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  background: #6c757d;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bayes-factor-indicator {
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  background: #3498db;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: left 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}

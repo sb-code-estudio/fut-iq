@@ -1,86 +1,176 @@
 import React, { useState } from 'react';
 
 const MinimalFutIQ = () => {
-  // Sample cards with bayesian learning elements
+  // Sample cards with proper Bayesian learning elements
   const cards = [
     {
       id: 1,
       title: 'Youth Prospect',
-      text: 'Scouts found a promising 17-year-old. Analytics team says data sample is too small.',
-      leftChoice: 'Trust analytics',
-      rightChoice: 'Trust scouts',
+      text: 'Scouts found a promising 17-year-old striker with excellent technical skills but limited competitive experience. Analytics team warns the data sample is too small for confident predictions.',
+      leftChoice: 'Trust analytics (wait for more data)',
+      rightChoice: 'Trust scouts (sign now)',
       outcomes: {
         left: {
-          message: "You wait for more data before investing.",
-          belief: { key: 'analytics', change: 0.1 }
+          message: "You decide to wait for more data. Another club signs the player, who scores 15 goals in his first season. Your analytics team points out his underlying metrics suggest regression next season.",
+          beliefs: [
+            { 
+              key: 'analytics', 
+              likelihood: 0.75,   // P(E|H) - probability of seeing this evidence if analytics is reliable
+              altLikelihood: 0.45 // P(E|~H) - probability of seeing this evidence if analytics is not reliable
+            },
+            {
+              key: 'young-players',
+              likelihood: 0.40,    // P(E|H) - probability of seeing this evidence if young players have high potential
+              altLikelihood: 0.70  // P(E|~H) - probability of seeing this evidence if young players don't have high potential
+            }
+          ],
+          formula: true
         },
         right: {
-          message: "You sign the young talent. Early training looks promising.",
-          belief: { key: 'young-players', change: 0.1 }
+          message: "You sign the young talent for $2M. He shows flashes of brilliance in training but struggles with consistency in matches, scoring only 3 goals this season. Your scouts remain convinced he'll develop into a star.",
+          beliefs: [
+            {
+              key: 'analytics',
+              likelihood: 0.50,    // Slightly validates analytics' caution
+              altLikelihood: 0.60  // Slightly contradicts the alternative
+            },
+            {
+              key: 'young-players',
+              likelihood: 0.80,    // Strong evidence for young player potential (long-term view)
+              altLikelihood: 0.30  // Strong evidence against alternative hypothesis
+            }
+          ]
         }
       }
     },
     {
       id: 2,
-      text: 'Next opponent is known for set-pieces. Your assistant suggests defensive set-piece training.',
-      leftChoice: 'Focus on possession',
-      rightChoice: 'Practice set-pieces',
+      text: 'Your next opponent scores 40% of their goals from set-pieces, well above league average. Your assistant suggests dedicating 3 training sessions to defensive set-piece preparation, which would reduce time for possession work.',
+      leftChoice: 'Maintain normal training routine',
+      rightChoice: 'Focus on set-piece defense',
       outcomes: {
         left: {
-          message: "Your possession focus didn't counter their set-piece threat.",
-          belief: { key: 'set-pieces', change: 0.15 }
+          message: "You stick with your normal training routine. In the match, your team dominates possession (65%) but concedes two goals from corners and loses 2-1. Set-pieces were indeed their primary threat.",
+          beliefs: [
+            {
+              key: 'set-pieces',
+              likelihood: 0.85,   // Strong evidence that set-pieces matter
+              altLikelihood: 0.35 // Contradicts alternative hypothesis
+            }
+          ]
         },
         right: {
-          message: "Your set-piece preparation paid off against their threats.",
-          belief: { key: 'set-pieces', change: 0.1 }
+          message: "You dedicate three sessions to set-piece defense. Your team successfully defends all 9 set-pieces in the match, winning 2-0. Players mention how the specific scenarios you practiced appeared exactly in the game.",
+          beliefs: [
+            {
+              key: 'set-pieces',
+              likelihood: 0.75,   // Strong evidence for set-piece importance
+              altLikelihood: 0.30  // Contradicts alternative hypothesis
+            }
+          ],
+          formula: true
         }
       }
     },
     {
       id: 3,
-      text: 'Your captain is injured. Medical staff suggests 3 weeks rest. Player wants to return in 1 week.',
-      leftChoice: 'Quick return',
-      rightChoice: 'Full recovery',
+      text: 'Your captain and star midfielder is diagnosed with a minor hamstring strain. Medical staff recommends 3 weeks rest for full recovery. The player insists he feels fine and wants to play in an important match next week.',
+      leftChoice: 'Allow early return (1 week rest)',
+      rightChoice: 'Follow medical advice (3 weeks rest)',
       outcomes: {
         left: {
-          message: "Early return backfired. Player re-injured and now out for 2 months.",
-          belief: { key: 'medical-advice', change: 0.2 }
+          message: "You allow your captain to return after only one week. He starts well but re-injures his hamstring after 30 minutes, now requiring surgery and a 3-month rehabilitation period. Your team loses the match and struggles without him.",
+          beliefs: [
+            {
+              key: 'medical-advice',
+              likelihood: 0.90,    // Very strong evidence for following medical advice
+              altLikelihood: 0.20  // Strongly contradicts alternative hypothesis
+            }
+          ],
+          formula: true
         },
         right: {
-          message: "Patient approach worked. Team rallied without captain.",
-          belief: { key: 'medical-advice', change: 0.1 }
+          message: "You enforce the full 3-week recovery despite the player's protests. He returns fully fit and performs exceptionally well for the remainder of the season. The medical team notes that scans show complete tissue healing.",
+          beliefs: [
+            {
+              key: 'medical-advice',
+              likelihood: 0.75,   // Strong evidence for medical advice value
+              altLikelihood: 0.40  // Moderate evidence against alternative hypothesis
+            }
+          ]
         }
       }
     },
     {
       id: 4,
-      text: 'Analytics team suggests 3-5-2 formation could improve results by 15%. Coaches prefer 4-4-2.',
-      leftChoice: 'Stay with 4-4-2',
-      rightChoice: 'Switch to 3-5-2',
+      text: 'Your analytics department presents data suggesting a switch from 4-4-2 to 3-5-2 would increase expected goals by 18% based on player profiles. Your experienced coaching staff prefers to maintain the familiar 4-4-2 system.',
+      leftChoice: 'Stick with 4-4-2 formation',
+      rightChoice: 'Implement new 3-5-2 system',
       outcomes: {
         left: {
-          message: "Traditional formation provided stability but limited options.",
-          belief: { key: 'analytics', change: -0.1 }
+          message: "You maintain the 4-4-2 formation. Your team performs steadily but predictably. After five matches, you average 1.2 goals per game, identical to your season average. Players express comfort with the familiar system.",
+          beliefs: [
+            {
+              key: 'analytics',
+              likelihood: 0.40,    // Moderate evidence against analytics' value
+              altLikelihood: 0.60  // Moderate evidence for the alternative viewpoint
+            },
+            {
+              key: 'experience',
+              likelihood: 0.65,    // Moderate evidence for experience value
+              altLikelihood: 0.45  // Weak evidence against alternative hypothesis
+            }
+          ]
         },
         right: {
-          message: "New formation created confusion but improved attacking output.",
-          belief: { key: 'analytics', change: 0.1 }
+          message: "You implement the 3-5-2 formation. After initial confusion and two draws, your team adapts and wins three straight games, averaging 2.4 goals per game - a 100% increase. Players report the system maximizes their strengths.",
+          beliefs: [
+            {
+              key: 'analytics',
+              likelihood: 0.85,    // Strong evidence for analytics' value
+              altLikelihood: 0.25  // Strong evidence against alternative hypothesis
+            }
+          ],
+          formula: true
         }
       }
     },
     {
       id: 5,
-      text: 'Your aging midfielder (32) is declining statistically but has leadership. Academy prospect (19) is pushing for his spot.',
-      leftChoice: 'Keep veteran',
-      rightChoice: 'Play youngster',
+      text: 'Your 32-year-old midfielder shows declining physical metrics but provides leadership and tactical intelligence. A 19-year-old academy prospect has impressed in training and is physically superior but inexperienced.',
+      leftChoice: 'Start experienced midfielder',
+      rightChoice: 'Start young prospect',
       outcomes: {
         left: {
-          message: "Veteran's experience stabilized the team during tough matches.",
-          belief: { key: 'experience', change: 0.1 }
+          message: "You start the veteran midfielder. His positioning and leadership prove crucial in a tight match against a top opponent. He makes a key tactical adjustment during play that leads to the winning goal, though he's substituted at 70' due to fatigue.",
+          beliefs: [
+            {
+              key: 'experience',
+              likelihood: 0.85,    // Strong evidence for experience value
+              altLikelihood: 0.25  // Strong evidence against alternative hypothesis
+            },
+            {
+              key: 'young-players',
+              likelihood: 0.50,    // Neutral regarding young players
+              altLikelihood: 0.60  // Slightly favors alternative hypothesis
+            }
+          ],
+          formula: true
         },
         right: {
-          message: "Academy player showed brilliance but made costly mistakes.",
-          belief: { key: 'young-players', change: -0.05 }
+          message: "You start the academy prospect. He shows tremendous physical ability and creates two excellent chances, but makes a positional error that leads to a critical goal. The team struggles with on-field organization without the veteran's leadership.",
+          beliefs: [
+            {
+              key: 'experience',
+              likelihood: 0.75,    // Strong evidence for experience value
+              altLikelihood: 0.35  // Moderate evidence against alternative hypothesis
+            },
+            {
+              key: 'young-players',
+              likelihood: 0.60,    // Some evidence for young player potential
+              altLikelihood: 0.50  // Near-neutral on alternative hypothesis
+            }
+          ]
         }
       }
     }
@@ -100,26 +190,23 @@ const MinimalFutIQ = () => {
   const [cardIndex, setCardIndex] = useState(0);
   const [showOutcome, setShowOutcome] = useState(false);
   const [outcome, setOutcome] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(null);
+  const [lastUpdates, setLastUpdates] = useState([]);
   const [gameOver, setGameOver] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
-  // Helper to update belief using Bayes' rule (simplified)
-  const updateBelief = (key, change) => {
-    const prior = beliefs[key] || 0.5;
+  // Proper Bayesian update function
+  const bayesianUpdate = (prior, likelihood, alternativeLikelihood) => {
+    // Convert prior probability to odds
+    const priorOdds = prior / (1 - prior);
     
-    // Simple Bayesian update (avoiding complex calculations for the demo)
-    // Instead we just adjust the belief in the appropriate direction
-    let posterior = prior + change;
+    // Calculate Bayes factor
+    const bayesFactor = likelihood / alternativeLikelihood;
     
-    // Ensure belief stays between 0 and 1
-    posterior = Math.max(0.1, Math.min(0.9, posterior));
+    // Calculate posterior odds
+    const posteriorOdds = priorOdds * bayesFactor;
     
-    return {
-      key,
-      prior,
-      posterior,
-      change
-    };
+    // Convert posterior odds back to probability
+    return posteriorOdds / (1 + posteriorOdds);
   };
 
   // Handle card choice
@@ -129,20 +216,35 @@ const MinimalFutIQ = () => {
     const currentCard = cards[cardIndex];
     const chosenOutcome = direction === 'left' ? currentCard.outcomes.left : currentCard.outcomes.right;
     
-    // Update belief
-    const beliefKey = chosenOutcome.belief.key;
-    const beliefChange = chosenOutcome.belief.change;
-    const update = updateBelief(beliefKey, beliefChange);
+    // Update beliefs using Bayesian update
+    const updates = [];
+    const newBeliefs = { ...beliefs };
     
-    // Update state
-    setBeliefs({
-      ...beliefs,
-      [beliefKey]: update.posterior
+    chosenOutcome.beliefs.forEach(beliefUpdate => {
+      const key = beliefUpdate.key;
+      const prior = beliefs[key];
+      const likelihood = beliefUpdate.likelihood;
+      const altLikelihood = beliefUpdate.altLikelihood;
+      
+      const posterior = bayesianUpdate(prior, likelihood, altLikelihood);
+      
+      updates.push({
+        key,
+        prior,
+        posterior,
+        likelihood,
+        altLikelihood
+      });
+      
+      newBeliefs[key] = posterior;
     });
     
+    // Update state
+    setBeliefs(newBeliefs);
     setOutcome(chosenOutcome);
-    setLastUpdate(update);
+    setLastUpdates(updates);
     setShowOutcome(true);
+    setShowExplanation(false);
   };
 
   // Continue to next card
@@ -153,7 +255,13 @@ const MinimalFutIQ = () => {
       setCardIndex(cardIndex + 1);
       setShowOutcome(false);
       setOutcome(null);
+      setShowExplanation(false);
     }
+  };
+
+  // Toggle explanation
+  const toggleExplanation = () => {
+    setShowExplanation(!showExplanation);
   };
 
   // Restart game
@@ -162,8 +270,9 @@ const MinimalFutIQ = () => {
     setCardIndex(0);
     setShowOutcome(false);
     setOutcome(null);
-    setLastUpdate(null);
+    setLastUpdates([]);
     setGameOver(false);
+    setShowExplanation(false);
   };
 
   // Get belief name from key
@@ -176,6 +285,11 @@ const MinimalFutIQ = () => {
       'experience': 'Experience is valuable in key moments'
     };
     return names[key] || key;
+  };
+
+  // Format percentage
+  const formatPercent = (value) => {
+    return Math.round(value * 100) + '%';
   };
 
   // Render current card or outcome
@@ -192,7 +306,7 @@ const MinimalFutIQ = () => {
                 <div className="belief-bar-container">
                   <div className="belief-bar" style={{ width: `${value * 100}%` }}></div>
                 </div>
-                <div className="belief-value">{Math.round(value * 100)}%</div>
+                <div className="belief-value">{formatPercent(value)}</div>
               </div>
             ))}
           </div>
@@ -206,23 +320,51 @@ const MinimalFutIQ = () => {
         <div className="outcome">
           <p className="outcome-message">{outcome.message}</p>
           
-          {lastUpdate && (
-            <div className="belief-update">
-              <h3>Belief Update</h3>
-              <div className="update-content">
-                <div className="belief-name">{getBeliefName(lastUpdate.key)}</div>
-                <div className="belief-comparison">
-                  <div className="belief-box">
-                    <div>Prior</div>
-                    <div className="value">{Math.round(lastUpdate.prior * 100)}%</div>
-                  </div>
-                  <div className="arrow">→</div>
-                  <div className="belief-box">
-                    <div>Posterior</div>
-                    <div className="value">{Math.round(lastUpdate.posterior * 100)}%</div>
+          {lastUpdates.length > 0 && (
+            <div className="belief-updates">
+              <h3>Belief Updates</h3>
+              
+              {lastUpdates.map((update, index) => (
+                <div key={index} className="belief-update">
+                  <div className="update-content">
+                    <div className="belief-name">{getBeliefName(update.key)}</div>
+                    
+                    <div className="belief-comparison">
+                      <div className="belief-box">
+                        <div>Prior</div>
+                        <div className="value">{formatPercent(update.prior)}</div>
+                      </div>
+                      <div className="arrow">→</div>
+                      <div className="belief-box">
+                        <div>Posterior</div>
+                        <div className="value">{formatPercent(update.posterior)}</div>
+                      </div>
+                    </div>
+                    
+                    {(outcome.formula || showExplanation) && (
+                      <div className="bayes-explanation">
+                        <div className="formula">
+                          <p>Bayes' Theorem: P(H|E) = [P(E|H) × P(H)] / P(E)</p>
+                          <p>Where:</p>
+                          <ul>
+                            <li>P(H) = {formatPercent(update.prior)} (Prior)</li>
+                            <li>P(E|H) = {formatPercent(update.likelihood)} (Likelihood)</li>
+                            <li>P(E|~H) = {formatPercent(update.altLikelihood)} (Alternative Likelihood)</li>
+                          </ul>
+                          <p>The Bayes Factor: {update.likelihood} / {update.altLikelihood} = {(update.likelihood / update.altLikelihood).toFixed(2)}</p>
+                          <p>This shifts your belief by a factor of {(update.likelihood / update.altLikelihood).toFixed(2)}x</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
+              ))}
+              
+              {!outcome.formula && (
+                <button className="explanation-button" onClick={toggleExplanation}>
+                  {showExplanation ? "Hide Math" : "Show Bayesian Math"}
+                </button>
+              )}
             </div>
           )}
           
@@ -250,7 +392,7 @@ const MinimalFutIQ = () => {
   return (
     <div className="game-container">
       <header>
-        <h1>Fut-IQ</h1>
+        <h1>Fut-IQ: Bayesian Decision Making</h1>
         <div className="progress">Decision {cardIndex + 1}/{cards.length}</div>
       </header>
       
@@ -269,6 +411,17 @@ const MinimalFutIQ = () => {
       
       <div className="card-container">
         {renderCardOrOutcome()}
+      </div>
+
+      {/* Bayesian Concepts Panel */}
+      <div className="concepts-panel">
+        <h3>Bayesian Concepts</h3>
+        <div className="concepts-content">
+          <p><strong>Prior:</strong> Your initial belief before seeing evidence</p>
+          <p><strong>Likelihood:</strong> Probability of seeing the evidence if your belief is true</p>
+          <p><strong>Posterior:</strong> Your updated belief after considering evidence</p>
+          <p><strong>Bayes Factor:</strong> How much more likely the evidence is under one hypothesis vs another</p>
+        </div>
       </div>
     </div>
   );
