@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/fut-iq/static/css/main.0a009413.css",
-    "main.js": "/fut-iq/static/js/main.f0bf0b30.js",
+    "main.js": "/fut-iq/static/js/main.cfb3831d.js",
     "index.html": "/fut-iq/index.html",
     "main.0a009413.css.map": "/fut-iq/static/css/main.0a009413.css.map",
-    "main.f0bf0b30.js.map": "/fut-iq/static/js/main.f0bf0b30.js.map"
+    "main.cfb3831d.js.map": "/fut-iq/static/js/main.cfb3831d.js.map"
   },
   "entrypoints": [
     "static/css/main.0a009413.css",
-    "static/js/main.f0bf0b30.js"
+    "static/js/main.cfb3831d.js"
   ]
 }
