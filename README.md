@@ -1,8 +1,9 @@
 Check it out here: https://sb-code-estudio.github.io/fut-iq/#/game
 
 Bayesian Methods & Concepts: A Practical Guide
-Core Concepts as Illustrated in Fut-IQ
+
 The Fut-IQ game demonstrates Bayesian thinking through football management decisions. Here are the key concepts and their real-world applications:
+
 1. Prior Beliefs (Priors)
 In Fut-IQ:
 
